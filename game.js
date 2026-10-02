@@ -16,9 +16,35 @@ board.addEventListener('pointermove',e=>{if(!dragging)return;const i=atPoint(e);
 board.addEventListener('pointerup',e=>{if(!dragging)return;dragging=false;if(board.hasPointerCapture(e.pointerId))board.releasePointerCapture(e.pointerId);const i=atPoint(e);if(dragMoved){if(i!==null)updateSelection(anchor??press,i);resolve();}else if(i!==null){tap(i);}else clearSelection();press=null;});
 board.addEventListener('pointercancel',()=>{dragging=false;press=null;clearSelection();});
 function tick(){if(!playing)return;const seconds=Math.max(0,(endAt-Date.now())/1000);$('time').textContent=Math.ceil(seconds);$('timebar').style.width=(seconds/duration*100)+'%';document.body.classList.toggle('frenzy',seconds<=10);if(seconds<=0)finish();else if(lastSuccess&&Date.now()-lastSuccess>4000&&combo>1){combo=1;$('combo').textContent='×1';}}
-function start(){if(!$('time-settings').hidden){if(!$('duration').reportValidity())return;duration=Number($('duration').value);}clearInterval(ticker);clearTimeout(feedbackTimer);cols=matchMedia('(max-width:640px)').matches?8:12;rows=cols===8?9:7;board.style.gridTemplateColumns=`repeat(${cols},minmax(0,1fr))`;playing=true;score=0;combo=1;lastSuccess=0;anchor=null;dragging=false;selected=[];$('score').textContent='0';$('combo').textContent='×1';$('sum').textContent='0';$('time').textContent=duration;$('timebar').style.width='100%';document.body.classList.remove('frenzy');document.querySelector('.sum-pill').classList.remove('good');$('overlay').classList.add('hidden');$('home').hidden=false;makeBoard();endAt=Date.now()+duration*1000;message('Drag a rectangle to make a sum of 10!');ticker=setInterval(tick,100);}
-function finish(){if(!playing)return;playing=false;dragging=false;clearInterval(ticker);clearSelection();$('time').textContent='0';$('timebar').style.width='0%';$('overlay-title').textContent=`${score.toLocaleString()} points harvested!`;$('overlay-copy').textContent='Great harvest! Play again or return home to change your time.';$('overlay-start').textContent='Play Again';$('overlay').classList.remove('hidden');$('time-settings').hidden=true;$('result-home').hidden=false;message('Time’s up! Play again or head home.');}
-function home(){playing=false;dragging=false;press=null;clearInterval(ticker);clearTimeout(feedbackTimer);clearSelection();$('overlay-title').textContent='Ready to harvest?';$('overlay-copy').innerHTML='Select a rectangle of apples.<br>Make the numbers add up to 10.';$('overlay-start').textContent='Start Game';$('overlay').classList.remove('hidden');$('time-settings').hidden=false;$('result-home').hidden=true;$('home').hidden=true;$('score').textContent='0';$('combo').textContent='×1';$('time').textContent=$('duration').value;$('timebar').style.width='100%';document.body.classList.remove('frenzy');message('Choose your time and start when you’re ready.');}
+function start(){
+ if(!$('duration').reportValidity())return;
+ duration=Number($('duration').value);
+ clearInterval(ticker);clearTimeout(feedbackTimer);
+ cols=matchMedia('(max-width:640px)').matches?8:12;rows=cols===8?9:7;
+ board.style.gridTemplateColumns=`repeat(${cols},minmax(0,1fr))`;
+ playing=true;score=0;combo=1;lastSuccess=0;anchor=null;dragging=false;press=null;selected=[];
+ $('score').textContent='0';$('combo').textContent='×1';$('sum').textContent='0';$('time').textContent=duration;
+ $('timebar').style.width='100%';document.body.classList.remove('frenzy');
+ document.querySelector('.sum-pill').classList.remove('good');
+ $('overlay').classList.add('hidden');$('home-screen').hidden=true;$('game-screen').hidden=false;
+ makeBoard();endAt=Date.now()+duration*1000;message('Drag a rectangle to make a sum of 10!');ticker=setInterval(tick,100);
+ $('game-title').focus();
+}
+function finish(){
+ if(!playing)return;
+ playing=false;dragging=false;clearInterval(ticker);clearSelection();
+ $('time').textContent='0';$('timebar').style.width='0%';
+ $('overlay-title').textContent=`${score.toLocaleString()} points harvested!`;
+ $('overlay-copy').textContent='Great harvest! Play again, or head home to change your time.';
+ $('overlay').classList.remove('hidden');message('Time’s up! Play again or head home.');
+ $('overlay-title').focus();
+}
+function home(){
+ playing=false;dragging=false;press=null;clearInterval(ticker);clearTimeout(feedbackTimer);clearSelection();
+ $('overlay').classList.add('hidden');$('home-screen').hidden=false;$('game-screen').hidden=true;
+ document.body.classList.remove('frenzy');$('home-title').focus();
+}
+$('setup-form').addEventListener('submit',e=>{e.preventDefault();start();});
 $('home').addEventListener('click',home);$('result-home').addEventListener('click',home);
 document.querySelectorAll('[data-seconds]').forEach(b=>b.addEventListener('click',()=>{$('duration').value=b.dataset.seconds;syncTime();}));
 function syncTime(){document.querySelectorAll('[data-seconds]').forEach(b=>b.classList.toggle('active',Number(b.dataset.seconds)===Number($('duration').value)));$('time').textContent=$('duration').value||'—';}
