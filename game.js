@@ -1,6 +1,6 @@
 'use strict';
 const $=id=>document.getElementById(id), board=$('board');
-let duration=60,cols=12,rows=7,cells=[],playing=false,score=0,combo=1,lastSuccess=0,endAt=0,ticker=null,anchor=null,dragging=false,dragMoved=false,press=null,selected=[],feedbackTimer=null;
+let duration=60,cols=17,rows=11,cells=[],playing=false,score=0,combo=1,lastSuccess=0,endAt=0,ticker=null,anchor=null,dragging=false,dragMoved=false,press=null,selected=[],feedbackTimer=null;
 function rect(a,b){let ids=[];for(let r=Math.floor(Math.min(Math.floor(a/cols),Math.floor(b/cols)));r<=Math.max(Math.floor(a/cols),Math.floor(b/cols));r++)for(let c=Math.min(a%cols,b%cols);c<=Math.max(a%cols,b%cols);c++)ids.push(r*cols+c);return ids;}
 function findMove(){for(let top=0;top<rows;top++)for(let left=0;left<cols;left++)for(let bottom=top;bottom<rows;bottom++){let total=0;for(let right=left;right<cols;right++){for(let r=top;r<=bottom;r++)total+=cells[r*cols+right]?.n||0;if(total===10)return [top*cols+left,bottom*cols+right];if(total>10)break;}}return null;}
 function makeBoard(){cells=Array.from({length:cols*rows},()=>({n:1+Math.floor(Math.random()*9),type:'normal'}));cells[0].n=3;cells[1].n=7;for(let i=2;i<cells.length;i++){const p=Math.random();cells[i].type=p<.065?'gold':p<.115?'bomb':'normal';}render();}
@@ -20,7 +20,7 @@ function start(){
  if(!$('duration').reportValidity())return;
  duration=Number($('duration').value);
  clearInterval(ticker);clearTimeout(feedbackTimer);
- cols=matchMedia('(max-width:640px)').matches?8:12;rows=cols===8?9:7;
+ configureBoard();
  board.style.gridTemplateColumns=`repeat(${cols},minmax(0,1fr))`;
  playing=true;score=0;combo=1;lastSuccess=0;anchor=null;dragging=false;press=null;selected=[];
  $('score').textContent='0';$('combo').textContent='×1';$('sum').textContent='0';$('time').textContent=duration;
@@ -42,10 +42,27 @@ function finish(){
 function home(){
  playing=false;dragging=false;press=null;clearInterval(ticker);clearTimeout(feedbackTimer);clearSelection();
  $('overlay').classList.add('hidden');$('home-screen').hidden=false;$('game-screen').hidden=true;
- document.body.classList.remove('frenzy');$('home-title').focus();
+ document.body.classList.remove('frenzy');syncBoardChoice();$('home-title').focus();
 }
+const boardSizes={large:[14,9],max:[17,11]};
+function currentSize(){return matchMedia('(max-width:640px)').matches?[8,9]:[12,7];}
+function chosenSize(){return boardSizes[$('board-size').value]||currentSize();}
+function configureBoard(){
+ [cols,rows]=chosenSize();
+ board.style.gridTemplateColumns=`repeat(${cols},minmax(0,1fr))`;
+ board.style.setProperty('--board-min-width',`${cols*40+(cols-1)*4}px`);
+ $('board-dimensions').textContent=`${cols} columns × ${rows} rows · ${cols*rows} apples`;
+ board.parentElement.scrollLeft=0;
+}
+function syncBoardChoice(){
+ const [c,r]=currentSize();
+ $('board-size').options[0].textContent=`Current — ${c} × ${r} (${c*r} apples)`;
+ const [selectedCols,selectedRows]=chosenSize();
+ $('board-help').textContent=`${selectedCols*selectedRows} apples · ${selectedCols} columns × ${selectedRows} rows.`;
+}
+$('board-size').addEventListener('change',syncBoardChoice);
 $('setup-form').addEventListener('submit',e=>{e.preventDefault();start();});
 $('home').addEventListener('click',home);$('result-home').addEventListener('click',home);
 document.querySelectorAll('[data-seconds]').forEach(b=>b.addEventListener('click',()=>{$('duration').value=b.dataset.seconds;syncTime();}));
 function syncTime(){document.querySelectorAll('[data-seconds]').forEach(b=>b.classList.toggle('active',Number(b.dataset.seconds)===Number($('duration').value)));$('time').textContent=$('duration').value||'—';}
-$('duration').addEventListener('input',syncTime);$('overlay-start').addEventListener('click',start);document.addEventListener('visibilitychange',()=>{if(!document.hidden)tick();});cols=matchMedia('(max-width:640px)').matches?8:12;rows=cols===8?9:7;board.style.gridTemplateColumns=`repeat(${cols},minmax(0,1fr))`;makeBoard();
+$('duration').addEventListener('input',syncTime);$('overlay-start').addEventListener('click',start);document.addEventListener('visibilitychange',()=>{if(!document.hidden)tick();});syncBoardChoice();configureBoard();makeBoard();
