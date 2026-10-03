@@ -6,7 +6,7 @@
 <meta name="description" content="Select apples that add up to 10. Choose your own time limit, collect golden apples, and trigger bombs in Apple Rush.">
 <title>Apple Rush · Apple Game</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%23163b2b'/%3E%3Ctext x='4' y='25' font-size='25'%3E🍎%3C/text%3E%3C/svg%3E">
-<link rel="stylesheet" href="style.css?v=english-phone-4">
+<link rel="stylesheet" href="style.css?v=english-tall-5">
 </head>
 <body>
 <main>
@@ -16,7 +16,7 @@
 <div class="home-intro"><p class="eyebrow">THE APPLE GAME WITH A TWIST</p><h1 id="home-title" tabindex="-1">Find 10.<br>Harvest more.</h1><p class="home-description">Pick a rectangle of apples whose numbers add up to 10. Clear as many as you can before time runs out.</p><div class="sample-match" aria-label="Example: 3 plus 7 equals 10"><span>🍎 <b>3</b></span><strong>+</strong><span>🍎 <b>7</b></span><strong>= 10</strong></div><p class="home-note">Golden apples. Explosive bombs. Bigger combos.</p></div>
 <form id="setup-form" class="setup-card">
 <p class="eyebrow">YOUR GAME, YOUR PACE</p><h2>Ready to play?</h2>
-<div class="board-settings"><label for="board-size">Board size <span>(columns × rows)</span></label><select id="board-size" name="board-size" aria-describedby="board-help"><option value="current">Current — 12 × 7 (84 apples)</option><option value="large">Bigger — 14 × 9 (126 apples)</option><option value="max" selected>Largest — 17 × 11 (187 apples)</option></select><p id="board-help">187 apples · More apples, more possibilities.</p></div>
+<div class="board-settings"><label for="board-size">Board size <span>(columns × rows)</span></label><select id="board-size" name="board-size" aria-describedby="board-help"><option value="current">Current — 7 × 12 (84 apples)</option><option value="large">Bigger — 9 × 14 (126 apples)</option><option value="max" selected>Largest — 11 × 17 (187 apples)</option></select><p id="board-help">187 apples · More apples, more possibilities.</p></div>
 <div id="time-settings" class="time-settings"><label for="duration">Game time <span>(seconds)</span></label>
 <div class="time-presets" aria-label="Time presets"><button type="button" data-seconds="30">30s</button><button type="button" data-seconds="60" class="active">60s</button><button type="button" data-seconds="120">120s</button></div>
 <label class="custom-label" for="duration">Or enter your own time</label><input id="duration" name="duration" type="number" inputmode="numeric" value="60" min="10" max="600" step="1" required aria-describedby="time-help"><small id="time-help">Any whole number from 10 to 600 seconds.</small></div>
@@ -30,10 +30,10 @@
 <div class="time-track"><div id="timebar"></div></div>
 <section class="game-panel"><div class="board-top"><span id="status" role="status" aria-live="polite">Drag a rectangle to make a sum of 10!</span><span class="sum-pill">Sum <strong id="sum">0</strong></span></div>
 <div class="board-wrap"><div id="board" class="board" aria-label="Apple board"></div></div>
-<div class="board-bottom"><span>Drag to select a rectangle</span><span id="board-dimensions">17 columns × 11 rows</span></div><p class="mobile-board-help">Drag across apples, or tap two opposite corners. The entire board fits your screen.</p></section>
+<div class="board-bottom"><span>Drag to select a rectangle</span><span id="board-dimensions">11 columns × 17 rows</span></div><p class="mobile-board-help">Drag across apples, or tap two opposite corners. All columns fit across your screen.</p></section>
 <section id="overlay" class="results hidden" aria-labelledby="overlay-title"><h2 id="overlay-title" tabindex="-1">Harvest complete!</h2><p id="overlay-copy">Play again or head home to change your time.</p><div class="result-actions"><button class="primary" id="overlay-start" type="button">Play Again</button><button id="result-home" class="home-button" type="button">Back to Home</button></div></section>
 </section>
 <section class="guide" aria-label="How to play"><article><span>🍎</span><div><h3>Make 10</h3><p>Drag, or tap two opposite corners. All apples inside your rectangle count. Empty spaces can be included.</p></div></article><article><span>✨</span><div><h3>Golden Apples</h3><p>Clear a golden apple for +50 points! Its number counts toward the sum.</p></div></article><article><span>💣</span><div><h3>Bombs & Combos</h3><p>Bombs clear nearby apples. Make another match within 4 seconds for up to ×4.</p></div></article></section>
 <p class="footnote">10 points per apple · Wrong sums reset your combo · No moves? A fresh board appears</p>
-</main><script src="game.js?v=english-phone-4"></script>
+</main><script src="game.js?v=english-tall-5"></script>
 </body></html>
